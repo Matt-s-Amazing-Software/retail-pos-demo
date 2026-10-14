@@ -36,11 +36,12 @@ function completeSale(t, method, tendered, giftCode) {
   const id = state.nextOrder++;
   state.sales = [...state.sales, {
     id, at: new Date().toISOString(), lines: state.cart.map((l) => ({ ...l })), ...t,
-    method, tendered: result.tendered, change: result.change, ...(giftCard ? { giftCard, giftBalance } : {}),
+    method, tendered: result.tendered, change: result.change, ...(giftCard ? { giftCard, giftBalance } : {}), ...(state.orderNote ? { note: state.orderNote } : {}),
   }];
   log("Sales", `Order ${id}: ${money(t.total)} paid by ${methodLabel(method)}`);
   state.catalog = applySale(state.catalog, state.cart);
   state.cart = [];
+  state.orderNote = "";
   state.discount = null;
   message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "")
     + (giftCard ? ` ${giftCard} has ${money(giftBalance)} left.` : "")

@@ -62,6 +62,7 @@ function render(root) {
           <div><dt>Tax</dt><dd data-testid="tax">${money(t.tax)}</dd></div>
           <div class="grand"><dt>Total</dt><dd data-testid="total">${money(t.total)}</dd></div>
         </dl>
+        <p><label>Order note <input name="note" id="order-note" maxlength="120" size="30" value="${state.orderNote.replace(/"/g, "&quot;")}" placeholder="Optional, shown on the receipt" data-testid="order-note"></label></p>
         <form id="discount-form" class="discount">
           <label>Discount
             <select name="type" data-testid="discount-type"><option value="percent">Percent off</option><option value="amount">Dollars off</option></select>
@@ -84,6 +85,10 @@ function render(root) {
       </ul>
     </section>`}`;
 
+  root.querySelector("#order-note").addEventListener("change", (event) => {
+    state.orderNote = event.target.value.trim();
+    save();
+  });
   root.querySelector("#discount-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const f = event.target;
@@ -102,6 +107,7 @@ function render(root) {
     else {
       state.held = result.held;
       state.cart = [];
+      state.orderNote = "";
     }
     save();
     draw();
