@@ -102,7 +102,7 @@ function render(root) {
   const removeDiscount = root.querySelector("[data-testid=remove-discount]");
   if (removeDiscount) removeDiscount.addEventListener("click", () => { state.discount = null; save(); draw(); });
   root.querySelector("[data-testid=hold-order]").addEventListener("click", () => {
-    const result = holdOrder(state.held, state.cart);
+    const result = holdOrder(state.held, state.cart, state.orderNote);
     if (result.error) message = result.error;
     else {
       state.held = result.held;
@@ -119,6 +119,7 @@ function render(root) {
       else {
         state.held = result.held;
         state.cart = result.cart;
+        state.orderNote = result.note;
       }
       save();
       draw();
