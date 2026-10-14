@@ -1,8 +1,14 @@
 // Draws the navigation and the screen for the current #/route.
 const ROUTES = {};
 
-export function registerScreen(path, label, render) {
-  ROUTES[path] = { label, render };
+// `hidden` screens are reachable by link but do not get a tab in the navigation.
+export function registerScreen(path, label, render, { hidden = false } = {}) {
+  ROUTES[path] = { label, render, hidden };
+}
+
+// The query part of the address, such as #/receipt?order=1001 -> { order: "1001" }.
+export function currentQuery() {
+  return Object.fromEntries(new URLSearchParams(location.hash.split("?")[1] || ""));
 }
 
 function currentPath() {
@@ -13,6 +19,7 @@ function draw() {
   const path = currentPath();
   const app = document.getElementById("app");
   document.getElementById("nav").innerHTML = Object.entries(ROUTES)
+    .filter(([, r]) => !r.hidden)
     .map(([p, r]) => `<a href="#${p}" ${p === path ? 'aria-current="page"' : ""}>${r.label}</a>`)
     .join("");
   const screen = ROUTES[path];

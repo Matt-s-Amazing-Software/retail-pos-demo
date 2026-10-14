@@ -23,7 +23,8 @@ function completeSale(t, method, tendered) {
     method, tendered: result.tendered, change: result.change,
   }];
   state.cart = [];
-  message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "") };
+  message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "")
+    + ` <a href="#/receipt?order=${id}" data-testid="view-receipt">View receipt</a>` };
 }
 
 function render(root) {
