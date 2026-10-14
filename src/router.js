@@ -46,3 +46,11 @@ function draw() {
 window.addEventListener("hashchange", draw);
 window.addEventListener("DOMContentLoaded", draw);
 export { draw };
+
+// The skip link must not change the address, because the address is what chooses the screen.
+document.addEventListener("click", (event) => {
+  if (event.target.closest("a.skip")) {
+    event.preventDefault();
+    document.getElementById("app").focus();
+  }
+});
