@@ -16,10 +16,11 @@ export function addItem(cart, product) {
   return cart;
 }
 
+// Change a line's quantity. A line that would drop to zero is removed rather than left at zero or below.
 export function changeQty(cart, sku, delta) {
   const line = cart.find((l) => l.sku === sku);
   if (line) line.qty += delta;
-  return cart;
+  return cart.filter((l) => l.qty > 0);
 }
 
 export function removeItem(cart, sku) {
