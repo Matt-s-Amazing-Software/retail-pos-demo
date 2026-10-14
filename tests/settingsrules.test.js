@@ -28,3 +28,10 @@ test("the low stock warning is a whole number and defaults to 5", () => {
   assert.match(ok("x").error, /low stock/i);
   assert.match(ok("-2").error, /low stock/i);
 });
+
+test("the store address and phone are optional, trimmed, and kept short", () => {
+  const ok = parseSettings({ storeName: "Shop", taxPercent: "8", floatDollars: "100", storeAddress: " 12 Main St ", storePhone: "555-0100" }).settings;
+  assert.deepEqual([ok.storeAddress, ok.storePhone], ["12 Main St", "555-0100"]);
+  assert.deepEqual(parseSettings({ storeName: "Shop", taxPercent: "8", floatDollars: "100" }).settings.storeAddress, "");
+  assert.match(parseSettings({ storeName: "Shop", taxPercent: "8", floatDollars: "100", storeAddress: "x".repeat(81) }).error, /under 80/);
+});

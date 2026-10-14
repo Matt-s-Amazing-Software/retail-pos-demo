@@ -9,5 +9,8 @@ export function parseSettings(input) {
   if (!Number.isFinite(float) || float < 0) return { error: "Enter the opening cash float in dollars." };
   const lowText = String(input.lowStock ?? "5").trim();
   if (!/^\d{1,4}$/.test(lowText)) return { error: "Enter a whole number for the low stock warning." };
-  return { settings: { storeName, taxRate, float, lowStock: Number(lowText) } };
+  const storeAddress = String(input.storeAddress ?? "").trim();
+  const storePhone = String(input.storePhone ?? "").trim();
+  if (storeAddress.length > 80 || storePhone.length > 80) return { error: "Keep the address and phone number under 80 characters." };
+  return { settings: { storeName, taxRate, float, lowStock: Number(lowText), storeAddress, storePhone } };
 }
