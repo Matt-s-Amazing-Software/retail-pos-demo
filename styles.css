@@ -86,3 +86,6 @@ input.stock { font:inherit; padding:6px 8px; }
   .discount, #pay-form, #find-form { flex-direction:column; align-items:stretch; }
   .grid button, .discount button, #pay-form button { width:100%; }
 }
+#balance-result { margin-left:8px; font-weight:600; }
+#balance-result.good { color:var(--good); }
+#balance-result.bad { color:var(--bad); }
