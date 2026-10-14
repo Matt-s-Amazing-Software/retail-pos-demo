@@ -2,6 +2,7 @@
 import { registerScreen, draw } from "./router.js";
 import { lineTotal, totals } from "./cart.js";
 import { money } from "./money.js";
+import { noticeHtml } from "./notice.js";
 import { parseAmount, settle } from "./payments.js";
 import { save, state } from "./store.js";
 
@@ -37,7 +38,7 @@ function render(root) {
       <section class="panel" aria-label="Payment">
         <h2>Payment</h2>
         <p class="due">Amount due <strong data-testid="amount-due">${money(t.total)}</strong></p>
-        ${shown ? `<p class="notice ${shown.error ? "error" : ""}" role="status" aria-live="polite" data-testid="payment-message">${shown.text}</p>` : ""}
+        ${noticeHtml(shown, "payment-message")}
         ${state.cart.length === 0 ? '<p class="muted">There is nothing to pay. Add products on the Register screen.</p>' : `
         <form id="pay-form">
           <fieldset>

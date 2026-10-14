@@ -1,6 +1,7 @@
 // The Returns screen: find a past sale by its order number and refund some or all of it.
 import { registerScreen, draw } from "./router.js";
 import { money } from "./money.js";
+import { noticeHtml } from "./notice.js";
 import { REASONS, refundFor, returnableQty, validateReturn } from "./refunds.js";
 import { save, state } from "./store.js";
 
@@ -15,7 +16,7 @@ function render(root) {
   root.innerHTML = `
     <section class="panel" aria-label="Returns">
       <h2>Returns</h2>
-      ${shown ? `<p class="notice ${shown.error ? "error" : ""}" role="status" data-testid="return-message">${shown.text}</p>` : ""}
+      ${noticeHtml(shown, "return-message")}
       <form id="find-form">
         <label>Order number <input name="order" inputmode="numeric" autocomplete="off" value="${lookup}" data-testid="order-number"></label>
         <button type="submit" data-testid="find-order">Find order</button>

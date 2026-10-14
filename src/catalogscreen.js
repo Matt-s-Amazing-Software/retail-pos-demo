@@ -2,6 +2,7 @@
 import { registerScreen, draw } from "./router.js";
 import { addProduct, setActive, setPrice, validateProduct } from "./catalogrules.js";
 import { money } from "./money.js";
+import { noticeHtml } from "./notice.js";
 import { parseAmount } from "./payments.js";
 import { save, state } from "./store.js";
 
@@ -13,7 +14,7 @@ function render(root) {
   root.innerHTML = `
     <section class="panel" aria-label="Catalog">
       <h2>Catalog</h2>
-      ${shown ? `<p class="notice ${shown.error ? "error" : ""}" role="status" data-testid="catalog-message">${shown.text}</p>` : ""}
+      ${noticeHtml(shown, "catalog-message")}
       <table data-testid="catalog-table">
         <thead><tr><th align="left">SKU</th><th align="left">Name</th><th align="left">Price</th><th align="left">On sale</th></tr></thead>
         <tbody>
