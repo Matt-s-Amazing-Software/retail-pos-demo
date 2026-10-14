@@ -28,6 +28,7 @@ function render(root) {
         <div class="grand"><dt>Total</dt><dd>${money(sale.total)}</dd></div>
         <div><dt>Paid by ${methodLabel(sale.method)}${sale.giftCard ? ` ${sale.giftCard}` : ""}</dt><dd>${money(sale.tendered)}</dd></div>
         ${sale.change ? `<div><dt>Change</dt><dd>${money(sale.change)}</dd></div>` : ""}
+        ${sale.giftCard ? `<div data-testid="receipt-gift-balance"><dt>Gift card balance</dt><dd>${money(sale.giftBalance)}</dd></div>` : ""}
       </dl>
       <p class="muted">Thank you for shopping with us.</p>
       <p class="no-print"><button class="primary" data-testid="print-receipt">Print receipt</button></p>
