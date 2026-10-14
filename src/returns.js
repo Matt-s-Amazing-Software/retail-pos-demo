@@ -6,6 +6,7 @@ import { REASONS, refundFor, returnableQty, validateReturn } from "./refunds.js"
 import { methodLabel } from "./payments.js";
 import { applyReturn } from "./stock.js";
 import { refundToCard } from "./giftcards.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 let lookup = ""; // the order number being worked on
@@ -66,6 +67,7 @@ function render(root) {
           items, reason: form.reason.value, method: sale.method, ...refund });
         state.catalog = applyReturn(state.catalog, items);
         if (sale.giftCard) state.giftCards = refundToCard(state.giftCards, sale.giftCard, refund.total);
+        log("Returns", `Order ${sale.id}: refunded ${money(refund.total)} (${form.reason.value})`);
         message = { error: false, text: `Refunded ${money(refund.total)} to the original payment method (${methodLabel(sale.method)}).` };
         save();
       }

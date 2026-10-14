@@ -1,4 +1,5 @@
 import { USERS, canOpen } from "./users.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 // Draws the navigation and the screen for the current #/route.
@@ -31,7 +32,7 @@ function draw() {
     ? `<span data-testid="whoami">${user.name} (${user.role})</span> <button id="signout" data-testid="signout">Sign out</button>`
     : "";
   const signout = document.getElementById("signout");
-  if (signout) signout.addEventListener("click", () => { state.currentUser = null; save(); draw(); });
+  if (signout) signout.addEventListener("click", () => { log("Sign-ins", "Signed out"); state.currentUser = null; save(); draw(); });
   document.getElementById("nav").innerHTML = Object.entries(ROUTES)
     .filter(([p, r]) => !r.hidden && canOpen(user, p))
     .map(([p, r]) => `<a href="#${p}" ${p === path ? 'aria-current="page"' : ""}>${r.label}</a>`)

@@ -6,6 +6,7 @@ import { noticeHtml } from "./notice.js";
 import { chargeCard } from "./giftcards.js";
 import { methodLabel, parseAmount, settle } from "./payments.js";
 import { applySale } from "./stock.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 let message = null; // the result of the last attempt, shown once
@@ -35,6 +36,7 @@ function completeSale(t, method, tendered, giftCode) {
     id, at: new Date().toISOString(), lines: state.cart.map((l) => ({ ...l })), ...t,
     method, tendered: result.tendered, change: result.change, ...(giftCard ? { giftCard } : {}),
   }];
+  log("Sales", `Order ${id}: ${money(t.total)} paid by ${methodLabel(method)}`);
   state.catalog = applySale(state.catalog, state.cart);
   state.cart = [];
   state.discount = null;

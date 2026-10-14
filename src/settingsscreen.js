@@ -2,6 +2,7 @@
 import { registerScreen, draw } from "./router.js";
 import { parseSettings } from "./settingsrules.js";
 import { noticeHtml } from "./notice.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 let message = null;
@@ -29,6 +30,7 @@ function render(root) {
     if (result.error) message = { error: true, text: result.error };
     else {
       state.settings = result.settings;
+      log("Settings", "Settings saved");
       message = { error: false, text: "Settings saved." };
       save();
     }
