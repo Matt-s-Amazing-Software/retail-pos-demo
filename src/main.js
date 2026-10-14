@@ -3,3 +3,4 @@ import "./register.js";
 import "./payment.js";
 import "./returns.js";
 import "./closeout.js";
+import "./receipt.js";
