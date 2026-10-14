@@ -54,3 +54,6 @@ td.qty button { min-width:44px; }
 .totals .grand dd { font-size:1.35rem; }
 .discount { margin:12px 0 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 .discount label { margin:0; }
+.whoami { font-size:.9rem; display:flex; align-items:center; gap:8px; }
+.whoami button { min-height:36px; padding:4px 10px; }
+.signin { max-width:380px; margin:40px auto; }
