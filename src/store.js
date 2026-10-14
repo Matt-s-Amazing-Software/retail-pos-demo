@@ -1,6 +1,8 @@
 // The app's state, kept in the browser's local storage. There is no server and no real data.
 const KEY = "retail-pos-demo/v1";
-const fresh = () => ({ cart: [], sales: [], returns: [], nextOrder: 1001, nextReturn: 1 });
+// A session is one shift on the register: it opens with a cash float and ends with a count of the drawer.
+export const newSession = () => ({ openedAt: new Date().toISOString(), float: 10000, closedAt: null, result: null });
+const fresh = () => ({ cart: [], sales: [], returns: [], nextOrder: 1001, nextReturn: 1, session: newSession() });
 
 function load() {
   try {

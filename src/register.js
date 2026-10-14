@@ -7,13 +7,15 @@ import { save, state } from "./store.js";
 
 function render(root) {
   const t = totals(state.cart);
+  const closed = Boolean(state.session.closedAt);
   root.innerHTML = `
+    ${closed ? '<p class="notice error" role="status" data-testid="session-closed">The session is closed. Start a new session on the Close session screen to keep selling.</p>' : ""}
     <div class="register">
       <section class="panel" aria-label="Products">
         <h2>Products</h2>
         <div class="grid">
           ${PRODUCTS.map((p) => `
-            <button data-testid="product-${p.sku}" data-sku="${p.sku}" aria-label="Add ${p.name}, ${money(p.price)}">
+            <button data-testid="product-${p.sku}" data-sku="${p.sku}" ${closed ? "disabled" : ""} aria-label="Add ${p.name}, ${money(p.price)}">
               <strong>${p.name}</strong><br><span class="muted">${money(p.price)}</span>
             </button>`).join("")}
         </div>
@@ -41,7 +43,7 @@ function render(root) {
           <div><dt>Tax</dt><dd data-testid="tax">${money(t.tax)}</dd></div>
           <div class="grand"><dt>Total</dt><dd data-testid="total">${money(t.total)}</dd></div>
         </dl>
-        <p><button class="primary" data-testid="go-to-payment" ${state.cart.length === 0 ? "disabled" : ""}>Go to payment</button></p>
+        <p><button class="primary" data-testid="go-to-payment" ${state.cart.length === 0 || closed ? "disabled" : ""}>Go to payment</button></p>
       </section>
     </div>`;
 
