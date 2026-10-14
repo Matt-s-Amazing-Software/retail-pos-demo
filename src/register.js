@@ -3,9 +3,19 @@ import { registerScreen, draw } from "./router.js";
 import { addItem, changeQty, lineTotal, removeItem, totals } from "./cart.js";
 import { money } from "./money.js";
 import { holdOrder, resumeOrder } from "./held.js";
+import { canAdd, inCart, isLow, stockOf } from "./stock.js";
 import { save, state } from "./store.js";
 
 let message = null;
+
+// Add one product to the order unless the shelf cannot cover it. Used by the buttons, the + button and the shortcuts.
+function tryAdd(product) {
+  const check = canAdd(product, state.cart);
+  if (!check.ok) message = check.message;
+  else addItem(state.cart, product);
+  save();
+  draw();
+}
 
 function render(root) {
   const t = totals(state.cart, state.discount, state.settings.taxRate);
@@ -20,8 +30,10 @@ function render(root) {
         <h2>Products</h2>
         <div class="grid">
           ${state.catalog.filter((p) => p.active).map((p) => `
-            <button data-testid="product-${p.sku}" data-sku="${p.sku}" ${closed ? "disabled" : ""} aria-label="Add ${p.name}, ${money(p.price)}">
+            <button data-testid="product-${p.sku}" data-sku="${p.sku}" ${closed || stockOf(p) === 0 ? "disabled" : ""} aria-label="Add ${p.name}, ${money(p.price)}">
               <strong>${p.name}</strong><br><span class="muted">${money(p.price)}</span>
+              ${stockOf(p) === 0 ? '<br><span class="tag out" data-testid="out-' + p.sku + '">Out of stock</span>'
+                : isLow(p, state.settings.lowStock ?? 5) ? '<br><span class="tag low">Only ' + stockOf(p) + ' left</span>' : ""}
             </button>`).join("")}
         </div>
         <p class="muted hint">Shortcuts: <kbd>1</kbd>&ndash;<kbd>${state.catalog.filter((p) => p.active).length}</kbd> add a product, <kbd>P</kbd> go to payment.</p>
@@ -110,14 +122,16 @@ function render(root) {
   });
   root.querySelectorAll("[data-testid^=product-]").forEach((b) =>
     b.addEventListener("click", () => {
-      addItem(state.cart, state.catalog.find((p) => p.sku === b.dataset.sku));
-      save();
-      draw();
+      tryAdd(state.catalog.find((p) => p.sku === b.dataset.sku));
     }));
   root.querySelectorAll("[data-act]").forEach((b) =>
     b.addEventListener("click", () => {
       const { act, sku } = b.dataset;
-      if (act === "inc") state.cart = changeQty(state.cart, sku, 1);
+      if (act === "inc") {
+        const check = canAdd(state.catalog.find((p) => p.sku === sku), state.cart);
+        if (check.ok) state.cart = changeQty(state.cart, sku, 1);
+        else message = check.message;
+      }
       if (act === "dec") state.cart = changeQty(state.cart, sku, -1);
       if (act === "rm") state.cart = removeItem(state.cart, sku);
       save();
@@ -132,9 +146,7 @@ document.addEventListener("keydown", (event) => {
   if (/^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName)) return;
   const active = state.catalog.filter((p) => p.active);
   if (/^[1-9]$/.test(event.key) && active[Number(event.key) - 1]) {
-    addItem(state.cart, active[Number(event.key) - 1]);
-    save();
-    draw();
+    tryAdd(active[Number(event.key) - 1]);
   } else if (event.key.toLowerCase() === "p" && state.cart.length > 0) {
     location.hash = "#/payment";
   }

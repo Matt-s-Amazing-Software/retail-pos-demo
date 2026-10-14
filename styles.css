@@ -62,3 +62,8 @@ td.qty button { min-width:44px; }
 :focus-visible { outline:3px solid #2563eb; outline-offset:2px; }
 .hint { font-size:.85rem; margin:10px 0 0; }
 kbd { border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 5px; background:#fff; font-size:.85em; }
+.tag { display:inline-block; font-size:.75rem; font-weight:600; padding:1px 8px; border-radius:999px; margin-top:4px; }
+.tag.low { background:#fef3c7; color:#92400e; }
+.tag.out { background:#fee2e2; color:#991b1b; }
+.grid button:disabled { background:#f1f5f9; }
+input.stock { font:inherit; padding:6px 8px; }

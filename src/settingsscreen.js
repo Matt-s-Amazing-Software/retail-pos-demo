@@ -18,13 +18,14 @@ function render(root) {
         <p><label>Store name <input name="storeName" value="${s.storeName}" data-testid="setting-name"></label></p>
         <p><label>Sales tax rate (%) <input name="taxPercent" value="${Math.round(s.taxRate * 10000) / 100}" size="6" inputmode="decimal" data-testid="setting-tax"></label></p>
         <p><label>Opening cash float ($) <input name="floatDollars" value="${(s.float / 100).toFixed(2)}" size="8" inputmode="decimal" data-testid="setting-float"></label></p>
+        <p><label>Low stock warning at (units) <input name="lowStock" value="${s.lowStock ?? 5}" size="5" inputmode="numeric" data-testid="setting-low-stock"></label></p>
         <button class="primary" type="submit" data-testid="save-settings">Save settings</button>
       </form>
     </section>`;
   root.querySelector("#settings-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const f = event.target;
-    const result = parseSettings({ storeName: f.storeName.value, taxPercent: f.taxPercent.value, floatDollars: f.floatDollars.value });
+    const result = parseSettings({ storeName: f.storeName.value, taxPercent: f.taxPercent.value, floatDollars: f.floatDollars.value, lowStock: f.lowStock.value });
     if (result.error) message = { error: true, text: result.error };
     else {
       state.settings = result.settings;
