@@ -20,3 +20,11 @@ test("a tax rate outside zero to twenty-five percent is refused", () => {
     assert.match(parseSettings({ storeName: "Shop", taxPercent: bad, floatDollars: "100" }).error, /tax rate/i, bad);
   }
 });
+
+test("the low stock warning is a whole number and defaults to 5", () => {
+  const ok = (low) => parseSettings({ storeName: "Shop", taxPercent: "8", floatDollars: "100", lowStock: low });
+  assert.equal(ok("10").settings.lowStock, 10);
+  assert.equal(parseSettings({ storeName: "Shop", taxPercent: "8", floatDollars: "100" }).settings.lowStock, 5);
+  assert.match(ok("x").error, /low stock/i);
+  assert.match(ok("-2").error, /low stock/i);
+});

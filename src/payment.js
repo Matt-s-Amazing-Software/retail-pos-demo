@@ -4,6 +4,7 @@ import { lineTotal, totals } from "./cart.js";
 import { money } from "./money.js";
 import { noticeHtml } from "./notice.js";
 import { parseAmount, settle } from "./payments.js";
+import { applySale } from "./stock.js";
 import { save, state } from "./store.js";
 
 let message = null; // the result of the last attempt, shown once
@@ -23,6 +24,7 @@ function completeSale(t, method, tendered) {
     id, at: new Date().toISOString(), lines: state.cart.map((l) => ({ ...l })), ...t,
     method, tendered: result.tendered, change: result.change,
   }];
+  state.catalog = applySale(state.catalog, state.cart);
   state.cart = [];
   state.discount = null;
   message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "")
