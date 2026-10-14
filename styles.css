@@ -57,3 +57,8 @@ td.qty button { min-width:44px; }
 .whoami { font-size:.9rem; display:flex; align-items:center; gap:8px; }
 .whoami button { min-height:36px; padding:4px 10px; }
 .signin { max-width:380px; margin:40px auto; }
+.skip { position:absolute; left:-999px; top:0; background:#fff; color:var(--brand); padding:8px 12px; z-index:10; }
+.skip:focus { left:8px; top:8px; }
+:focus-visible { outline:3px solid #2563eb; outline-offset:2px; }
+.hint { font-size:.85rem; margin:10px 0 0; }
+kbd { border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 5px; background:#fff; font-size:.85em; }

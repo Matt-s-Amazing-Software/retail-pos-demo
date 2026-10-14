@@ -24,6 +24,7 @@ function render(root) {
               <strong>${p.name}</strong><br><span class="muted">${money(p.price)}</span>
             </button>`).join("")}
         </div>
+        <p class="muted hint">Shortcuts: <kbd>1</kbd>&ndash;<kbd>${state.catalog.filter((p) => p.active).length}</kbd> add a product, <kbd>P</kbd> go to payment.</p>
       </section>
       <section class="panel" aria-label="Current order">
         <h2>Current order</h2>
@@ -123,5 +124,20 @@ function render(root) {
       draw();
     }));
 }
+
+// Keyboard shortcuts work only on this screen, and never while typing in a field.
+document.addEventListener("keydown", (event) => {
+  if (location.hash !== "" && !location.hash.startsWith("#/register")) return;
+  if (event.metaKey || event.ctrlKey || event.altKey || state.session.closedAt) return;
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName)) return;
+  const active = state.catalog.filter((p) => p.active);
+  if (/^[1-9]$/.test(event.key) && active[Number(event.key) - 1]) {
+    addItem(state.cart, active[Number(event.key) - 1]);
+    save();
+    draw();
+  } else if (event.key.toLowerCase() === "p" && state.cart.length > 0) {
+    location.hash = "#/payment";
+  }
+});
 
 registerScreen("/register", "Register", render);
