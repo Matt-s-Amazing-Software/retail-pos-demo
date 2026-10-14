@@ -1,6 +1,7 @@
 // The Settings screen (manager): store name, sales tax rate and the opening cash float.
 import { registerScreen, draw } from "./router.js";
 import { parseSettings } from "./settingsrules.js";
+import { noticeHtml } from "./notice.js";
 import { save, state } from "./store.js";
 
 let message = null;
@@ -12,7 +13,7 @@ function render(root) {
   root.innerHTML = `
     <section class="panel" aria-label="Settings">
       <h2>Settings</h2>
-      ${shown ? `<p class="notice ${shown.error ? "error" : ""}" role="status" data-testid="settings-message">${shown.text}</p>` : ""}
+      ${noticeHtml(shown, "settings-message")}
       <form id="settings-form">
         <p><label>Store name <input name="storeName" value="${s.storeName}" data-testid="setting-name"></label></p>
         <p><label>Sales tax rate (%) <input name="taxPercent" value="${Math.round(s.taxRate * 10000) / 100}" size="6" inputmode="decimal" data-testid="setting-tax"></label></p>
