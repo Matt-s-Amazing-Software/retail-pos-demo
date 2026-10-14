@@ -19,7 +19,7 @@ function render(root) {
         <button class="primary" data-testid="start-session">Start a new session</button>
       </section>`;
     root.querySelector("[data-testid=start-session]").addEventListener("click", () => {
-      state.session = newSession();
+      state.session = newSession(state.settings.float);
       save();
       location.hash = "#/register";
       draw();

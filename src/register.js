@@ -8,7 +8,7 @@ import { save, state } from "./store.js";
 let message = null;
 
 function render(root) {
-  const t = totals(state.cart, state.discount);
+  const t = totals(state.cart, state.discount, state.settings.taxRate);
   const closed = Boolean(state.session.closedAt);
   const shown = message;
   message = null;

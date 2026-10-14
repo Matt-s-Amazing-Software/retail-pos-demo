@@ -29,7 +29,7 @@ function completeSale(t, method, tendered) {
 }
 
 function render(root) {
-  const t = totals(state.cart, state.discount);
+  const t = totals(state.cart, state.discount, state.settings.taxRate);
   const shown = message; // a result is displayed once, then forgotten
   message = null;
   root.innerHTML = `

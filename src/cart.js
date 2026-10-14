@@ -10,10 +10,10 @@ export function discountAmount(subtotal, discount) {
   return Math.min(Math.max(raw, 0), subtotal);
 }
 
-export function totals(cart, discount = null) {
+export function totals(cart, discount = null, rate = TAX_RATE) {
   const subtotal = cart.reduce((sum, line) => sum + lineTotal(line), 0);
   const off = discountAmount(subtotal, discount);
-  const tax = Math.round((subtotal - off) * TAX_RATE); // on what the customer pays for the goods; rounded once per order
+  const tax = Math.round((subtotal - off) * rate); // on what the customer pays for the goods; rounded once per order
   return { subtotal, discount: off, tax, total: subtotal - off + tax };
 }
 
