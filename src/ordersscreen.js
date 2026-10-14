@@ -9,6 +9,7 @@ import { markVoided, voidProblem } from "./voids.js";
 import { applyReturn } from "./stock.js";
 import { refundToCard } from "./giftcards.js";
 import { noticeHtml } from "./notice.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 function downloadCsv() {
@@ -72,6 +73,7 @@ function render(root) {
         state.sales = state.sales.map((x) => (x.id === sale.id ? markVoided(x, user, voidForm.reason.value) : x));
         state.catalog = applyReturn(state.catalog, sale.lines);
         if (sale.giftCard) state.giftCards = refundToCard(state.giftCards, sale.giftCard, sale.total);
+        log("Voids", `Order ${sale.id} voided: ${voidForm.reason.value.trim()}`);
         message = { error: false, text: `Order ${sale.id} voided.` };
         voiding = null;
         save();

@@ -5,6 +5,7 @@ import { money } from "./money.js";
 import { noticeHtml } from "./notice.js";
 import { parseAmount } from "./payments.js";
 import { isLow, parseStock, setStock, stockOf } from "./stock.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 let message = null;
@@ -40,7 +41,9 @@ function render(root) {
     </section>`;
   root.querySelectorAll("[data-active]").forEach((box) =>
     box.addEventListener("change", () => {
+      const product = state.catalog.find((p) => p.sku === box.dataset.active);
       state.catalog = setActive(state.catalog, box.dataset.active, box.checked);
+      log("Catalog", `${product.name} ${box.checked ? "put on sale" : "taken off sale"}`);
       save();
       draw();
     }));
@@ -48,7 +51,11 @@ function render(root) {
     input.addEventListener("change", () => {
       const price = parseAmount(input.value);
       if (!price) message = { error: true, text: "Enter a price above zero, like 12.50." };
-      else state.catalog = setPrice(state.catalog, input.dataset.price, price);
+      else {
+        const product = state.catalog.find((p) => p.sku === input.dataset.price);
+        log("Catalog", `Price of ${product.name} changed from ${money(product.price)} to ${money(price)}`);
+        state.catalog = setPrice(state.catalog, input.dataset.price, price);
+      }
       save();
       draw();
     }));
@@ -56,7 +63,11 @@ function render(root) {
     input.addEventListener("change", () => {
       const stock = parseStock(input.value);
       if (stock === null) message = { error: true, text: "Enter a whole number of 0 or more for the stock." };
-      else state.catalog = setStock(state.catalog, input.dataset.stock, stock);
+      else {
+        const product = state.catalog.find((p) => p.sku === input.dataset.stock);
+        log("Catalog", `Stock of ${product.name} changed from ${product.stock} to ${stock}`);
+        state.catalog = setStock(state.catalog, input.dataset.stock, stock);
+      }
       save();
       draw();
     }));
@@ -68,6 +79,7 @@ function render(root) {
     if (error) message = { error: true, text: error };
     else {
       state.catalog = addProduct(state.catalog, product);
+      log("Catalog", `Added ${product.name.trim()} (${product.sku.trim().toUpperCase()}) at ${money(product.price)}`);
       message = { error: false, text: `${product.name.trim()} added.` };
       save();
     }

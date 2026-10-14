@@ -1,6 +1,7 @@
 // The Sign in screen: choose who you are and enter a PIN.
 import { registerScreen, draw } from "./router.js";
 import { USERS, authenticate } from "./users.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 let error = null;
@@ -25,6 +26,7 @@ function render(root) {
     else {
       state.currentUser = user.id;
       save();
+      log("Sign-ins", "Signed in");
       location.hash = "#/register";
     }
     draw();

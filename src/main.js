@@ -10,3 +10,4 @@ import "./ordersscreen.js";
 import "./settingsscreen.js";
 import "./reportsscreen.js";
 import "./giftcardscreen.js";
+import "./activityscreen.js";

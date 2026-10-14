@@ -4,6 +4,7 @@ import { issueCard } from "./giftcards.js";
 import { money } from "./money.js";
 import { noticeHtml } from "./notice.js";
 import { parseAmount } from "./payments.js";
+import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 let message = null;
@@ -33,6 +34,7 @@ function render(root) {
     if (result.error) message = { error: true, text: result.error };
     else {
       state.giftCards = result.cards;
+      log("Gift cards", `Gift card ${result.card.code} issued for ${money(result.card.balance)}`);
       message = { error: false, text: `Gift card ${result.card.code} issued for ${money(result.card.balance)}.` };
       save();
     }

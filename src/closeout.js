@@ -2,6 +2,7 @@
 import { registerScreen, draw } from "./router.js";
 import { DENOMINATIONS, countedTotal, expectedCash, variance } from "./cashcount.js";
 import { money } from "./money.js";
+import { log } from "./activitylog.js";
 import { newSession, save, state } from "./store.js";
 
 function render(root) {
@@ -20,6 +21,7 @@ function render(root) {
       </section>`;
     root.querySelector("[data-testid=start-session]").addEventListener("click", () => {
       state.session = newSession(state.settings.float);
+      log("Sessions", "Started a new session");
       save();
       location.hash = "#/register";
       draw();
@@ -53,6 +55,7 @@ function render(root) {
     const expected = expectedCash(s, state.sales, state.returns);
     s.closedAt = new Date().toISOString();
     s.result = { counted, expected, variance: variance(counted, expected) };
+    log("Sessions", `Session closed: counted ${money(counted)}, expected ${money(expected)}`);
     save();
     draw();
   });
