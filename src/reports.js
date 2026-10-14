@@ -1,7 +1,7 @@
 // Sales summary for the current session. Pure functions on the sales and returns lists.
 export function salesSummary(sales, returns, since) {
   const inSession = (x) => x.at >= since;
-  const mine = sales.filter(inSession);
+  const mine = sales.filter((s) => inSession(s) && !s.voided); // a voided sale never happened
   const back = returns.filter(inSession);
   const sum = (list, key) => list.reduce((n, x) => n + (x[key] || 0), 0);
   const byMethod = {};

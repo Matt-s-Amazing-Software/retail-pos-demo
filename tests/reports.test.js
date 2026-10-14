@@ -30,3 +30,12 @@ test("an empty session summarises to zeros", () => {
   const r = salesSummary([], [], since);
   assert.deepEqual([r.orders, r.net, r.topProducts], [0, 0, []]);
 });
+
+test("a voided sale is left out of every figure", () => {
+  const voided = { ...sales[0], voided: { at: "2026-01-01T10:30:00Z", by: "morgan", reason: "Wrong customer" } };
+  const r = salesSummary([voided, sales[1]], [], since);
+  assert.equal(r.orders, 1);
+  assert.equal(r.takings, 828);
+  assert.deepEqual(r.byMethod, { card: 828 });
+  assert.deepEqual(r.topProducts, [["Loose Leaf Tea", 1]]);
+});
