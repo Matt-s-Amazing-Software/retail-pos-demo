@@ -4,6 +4,7 @@ import { filterOrders, orderStatus } from "./orders.js";
 import { ordersToCsv } from "./csv.js";
 import { USERS } from "./users.js";
 import { money } from "./money.js";
+import { methodLabel } from "./payments.js";
 import { state } from "./store.js";
 
 function downloadCsv() {
@@ -33,7 +34,7 @@ function render(root) {
         ${orders.map((s) => `
           <tr data-order="${s.id}">
             <td>${s.id}</td><td>${new Date(s.at).toLocaleString("en-US")}</td>
-            <td>${s.lines.reduce((n, l) => n + l.qty, 0)}</td><td>${s.method}</td><td class="num">${money(s.total)}</td>
+            <td>${s.lines.reduce((n, l) => n + l.qty, 0)}</td><td>${methodLabel(s.method)}</td><td class="num">${money(s.total)}</td>
             <td>${orderStatus(s, state.returns)}</td><td><a href="#/receipt?order=${s.id}">Receipt</a></td>
           </tr>`).join("")}
         </tbody>

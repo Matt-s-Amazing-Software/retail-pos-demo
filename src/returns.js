@@ -3,7 +3,9 @@ import { registerScreen, draw } from "./router.js";
 import { money } from "./money.js";
 import { noticeHtml } from "./notice.js";
 import { REASONS, refundFor, returnableQty, validateReturn } from "./refunds.js";
+import { methodLabel } from "./payments.js";
 import { applyReturn } from "./stock.js";
+import { refundToCard } from "./giftcards.js";
 import { save, state } from "./store.js";
 
 let lookup = ""; // the order number being worked on
@@ -25,7 +27,7 @@ function render(root) {
       ${lookup && !sale ? '<p class="muted" data-testid="order-not-found">No order with that number.</p>' : ""}
       ${sale ? `
       <form id="return-form">
-        <h3>Order ${sale.id} <span class="muted">paid by ${sale.method}</span></h3>
+        <h3>Order ${sale.id} <span class="muted">paid by ${methodLabel(sale.method)}</span></h3>
         <table>
           <tbody>
           ${sale.lines.map((l) => `
@@ -63,7 +65,8 @@ function render(root) {
         state.returns.push({ id: state.nextReturn++, orderId: sale.id, at: new Date().toISOString(),
           items, reason: form.reason.value, method: sale.method, ...refund });
         state.catalog = applyReturn(state.catalog, items);
-        message = { error: false, text: `Refunded ${money(refund.total)} to the original payment method (${sale.method}).` };
+        if (sale.giftCard) state.giftCards = refundToCard(state.giftCards, sale.giftCard, refund.total);
+        message = { error: false, text: `Refunded ${money(refund.total)} to the original payment method (${methodLabel(sale.method)}).` };
         save();
       }
       draw();

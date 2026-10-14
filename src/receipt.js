@@ -2,6 +2,7 @@
 import { registerScreen, currentQuery } from "./router.js";
 import { lineTotal } from "./cart.js";
 import { money } from "./money.js";
+import { methodLabel } from "./payments.js";
 import { state } from "./store.js";
 
 function render(root) {
@@ -24,7 +25,7 @@ function render(root) {
         ${sale.discount ? `<div><dt>Discount</dt><dd>&minus;${money(sale.discount)}</dd></div>` : ""}
         <div><dt>Tax</dt><dd>${money(sale.tax)}</dd></div>
         <div class="grand"><dt>Total</dt><dd>${money(sale.total)}</dd></div>
-        <div><dt>Paid by ${sale.method}</dt><dd>${money(sale.tendered)}</dd></div>
+        <div><dt>Paid by ${methodLabel(sale.method)}${sale.giftCard ? ` ${sale.giftCard}` : ""}</dt><dd>${money(sale.tendered)}</dd></div>
         ${sale.change ? `<div><dt>Change</dt><dd>${money(sale.change)}</dd></div>` : ""}
       </dl>
       <p class="muted">Thank you for shopping with us.</p>
