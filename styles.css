@@ -5,7 +5,7 @@ body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; 
 .topbar h1 { font-size:1.1rem; margin:0; letter-spacing:.01em; }
 .topbar h1::before { content:"\\25A6"; margin-right:8px; opacity:.85; }
 nav { display:flex; gap:6px; flex-wrap:wrap; }
-nav a { color:#dbe6f5; text-decoration:none; padding:10px 14px; border-radius:8px; }
+nav a { color:#dbe6f5; text-decoration:none; padding:0 14px; border-radius:8px; display:inline-flex; align-items:center; min-height:44px; }
 nav a[aria-current="page"] { background:var(--panel); color:var(--brand); font-weight:600; }
 main { max-width:1100px; margin:0 auto; padding:20px; }
 h2 { margin:0 0 12px; font-size:1.25rem; }
