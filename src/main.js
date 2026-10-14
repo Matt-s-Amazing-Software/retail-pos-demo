@@ -1,3 +1,4 @@
+import { startTheme } from "./theme.js";
 // Entry point: each screen registers itself with the router when it is imported.
 import "./signin.js";
 import "./register.js";
@@ -11,3 +12,4 @@ import "./settingsscreen.js";
 import "./reportsscreen.js";
 import "./giftcardscreen.js";
 import "./activityscreen.js";
+startTheme();
