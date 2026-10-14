@@ -8,6 +8,10 @@ import { save, state } from "./store.js";
 let message = null; // the result of the last attempt, shown once
 
 function completeSale(t, method, tendered) {
+  if (state.session.closedAt) {
+    message = { error: true, text: "The session is closed. Start a new session to keep selling." };
+    return;
+  }
   const result = settle({ method, total: t.total, tendered });
   if (!result.ok) {
     message = { error: true, text: result.error };
