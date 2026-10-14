@@ -15,3 +15,17 @@ button:disabled { opacity:.5; cursor:not-allowed; }
 .muted { color:var(--muted); }
 .notice { padding:10px 14px; border-radius:8px; background:#ecfdf5; color:var(--good); margin:0 0 12px; }
 .notice.error { background:#fef2f2; color:var(--bad); }
+
+.register { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+@media (max-width: 800px) { .register { grid-template-columns: 1fr; } }
+.grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:10px; }
+.grid button { padding:14px 10px; text-align:left; }
+table { width:100%; border-collapse:collapse; }
+td { padding:8px 4px; border-bottom:1px solid var(--line); vertical-align:middle; }
+td.num { text-align:right; white-space:nowrap; }
+td.qty { white-space:nowrap; }
+td.qty span { display:inline-block; min-width:2ch; text-align:center; }
+.totals { margin:12px 0 0; }
+.totals div { display:flex; justify-content:space-between; padding:3px 0; }
+.totals dt, .totals dd { margin:0; }
+.totals .grand { font-weight:700; font-size:1.15rem; border-top:1px solid var(--line); margin-top:6px; padding-top:8px; }
