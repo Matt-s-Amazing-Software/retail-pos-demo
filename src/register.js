@@ -1,6 +1,5 @@
 // The Register screen: pick products, adjust the current order.
 import { registerScreen, draw } from "./router.js";
-import { PRODUCTS } from "./catalog.js";
 import { addItem, changeQty, lineTotal, removeItem, totals } from "./cart.js";
 import { money } from "./money.js";
 import { holdOrder, resumeOrder } from "./held.js";
@@ -20,7 +19,7 @@ function render(root) {
       <section class="panel" aria-label="Products">
         <h2>Products</h2>
         <div class="grid">
-          ${PRODUCTS.map((p) => `
+          ${state.catalog.map((p) => `
             <button data-testid="product-${p.sku}" data-sku="${p.sku}" ${closed ? "disabled" : ""} aria-label="Add ${p.name}, ${money(p.price)}">
               <strong>${p.name}</strong><br><span class="muted">${money(p.price)}</span>
             </button>`).join("")}
@@ -89,7 +88,7 @@ function render(root) {
   });
   root.querySelectorAll("[data-testid^=product-]").forEach((b) =>
     b.addEventListener("click", () => {
-      addItem(state.cart, PRODUCTS.find((p) => p.sku === b.dataset.sku));
+      addItem(state.cart, state.catalog.find((p) => p.sku === b.dataset.sku));
       save();
       draw();
     }));
