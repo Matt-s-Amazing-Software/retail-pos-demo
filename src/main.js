@@ -8,3 +8,4 @@ import "./receipt.js";
 import "./catalogscreen.js";
 import "./ordersscreen.js";
 import "./settingsscreen.js";
+import "./reportsscreen.js";
