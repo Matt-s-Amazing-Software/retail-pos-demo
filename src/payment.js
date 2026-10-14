@@ -3,7 +3,7 @@ import { registerScreen, draw } from "./router.js";
 import { lineTotal, totals } from "./cart.js";
 import { money } from "./money.js";
 import { noticeHtml } from "./notice.js";
-import { chargeCard } from "./giftcards.js";
+import { balanceMessage, chargeCard } from "./giftcards.js";
 import { methodLabel, parseAmount, settle } from "./payments.js";
 import { applySale } from "./stock.js";
 import { log } from "./activitylog.js";
@@ -63,7 +63,9 @@ function render(root) {
             <label><input type="radio" name="method" value="giftcard"> Gift card</label>
           </fieldset>
           <p id="cash-row"><label>Cash received <input name="tendered" inputmode="decimal" autocomplete="off" data-testid="cash-received"></label></p>
-          <p id="gift-row" hidden><label>Gift card number <input name="giftcode" autocomplete="off" data-testid="giftcard-number"></label></p>
+          <p id="gift-row" hidden><label>Gift card number <input name="giftcode" autocomplete="off" data-testid="giftcard-number"></label>
+            <button type="button" id="check-balance" data-testid="check-balance">Check balance</button>
+            <span id="balance-result" role="status" aria-live="polite" data-testid="balance-result"></span></p>
           <button class="primary" type="submit" data-testid="complete-sale">Complete sale</button>
         </form>`}
       </section>
@@ -92,6 +94,12 @@ function render(root) {
     form.addEventListener("change", () => {
       cashRow.hidden = form.method.value !== "cash";
       giftRow.hidden = form.method.value !== "giftcard";
+    });
+    form.querySelector("#check-balance").addEventListener("click", () => {
+      const result = balanceMessage(state.giftCards, form.giftcode.value);
+      const out = form.querySelector("#balance-result");
+      out.textContent = result.text;
+      out.className = result.ok ? "good" : "bad";
     });
     form.addEventListener("submit", (event) => {
       event.preventDefault();

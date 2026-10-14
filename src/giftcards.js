@@ -27,6 +27,14 @@ export function chargeCard(cards, code, total) {
   return { ok: true, code: card.code, cards: cards.map((c) => (c.code === card.code ? { ...c, balance: c.balance - total } : c)) };
 }
 
+// What to tell a cashier who asks for a card's balance before taking payment.
+export function balanceMessage(cards, code) {
+  if (!normalizeCode(code)) return { ok: false, text: "Enter the gift card number." };
+  const card = findCard(cards, code);
+  if (!card) return { ok: false, text: "No gift card with that number." };
+  return { ok: true, text: `${card.code} has ${money(card.balance)} left.` };
+}
+
 // Put a refund back on the card it was paid with.
 export const refundToCard = (cards, code, amount) =>
   cards.map((c) => (c.code === code ? { ...c, balance: c.balance + amount } : c));

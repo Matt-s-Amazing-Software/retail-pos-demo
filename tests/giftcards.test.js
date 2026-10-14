@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { chargeCard, findCard, issueCard, refundToCard } from "../src/giftcards.js";
+import { balanceMessage, chargeCard, findCard, issueCard, refundToCard } from "../src/giftcards.js";
 import { settle } from "../src/payments.js";
 
 test("a gift card is issued with the next number and the amount as its balance", () => {
@@ -36,4 +36,11 @@ test("a refund goes back onto the card it was paid with", () => {
 
 test("a gift card payment settles for the exact total with no change", () => {
   assert.deepEqual(settle({ method: "giftcard", total: 1500 }), { ok: true, tendered: 1500, change: 0 });
+});
+
+test("a cashier can ask what is left on a card before taking payment", () => {
+  const { cards } = issueCard([], 2500);
+  assert.deepEqual(balanceMessage(cards, " gc-0001 "), { ok: true, text: "GC-0001 has $25.00 left." });
+  assert.equal(balanceMessage(cards, "GC-0099").text, "No gift card with that number.");
+  assert.equal(balanceMessage(cards, "").text, "Enter the gift card number.");
 });
