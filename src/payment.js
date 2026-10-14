@@ -1,17 +1,47 @@
 // The Payment screen: amount due beside a read-only summary of the current order.
-import { registerScreen } from "./router.js";
+import { registerScreen, draw } from "./router.js";
 import { lineTotal, totals } from "./cart.js";
 import { money } from "./money.js";
-import { state } from "./store.js";
+import { parseAmount, settle } from "./payments.js";
+import { save, state } from "./store.js";
+
+let message = null; // the result of the last attempt, shown once
+
+function completeSale(t, method, tendered) {
+  const result = settle({ method, total: t.total, tendered });
+  if (!result.ok) {
+    message = { error: true, text: result.error };
+    return;
+  }
+  const id = state.nextOrder++;
+  state.sales = [...state.sales, {
+    id, at: new Date().toISOString(), lines: state.cart.map((l) => ({ ...l })), ...t,
+    method, tendered: result.tendered, change: result.change,
+  }];
+  state.cart = [];
+  message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "") };
+}
 
 function render(root) {
   const t = totals(state.cart);
+  const shown = message; // a result is displayed once, then forgotten
+  message = null;
   root.innerHTML = `
     <div class="register">
       <section class="panel" aria-label="Payment">
         <h2>Payment</h2>
         <p class="due">Amount due <strong data-testid="amount-due">${money(t.total)}</strong></p>
-        ${state.cart.length === 0 ? '<p class="muted">There is nothing to pay. Add products on the Register screen.</p>' : ""}
+        ${shown ? `<p class="notice ${shown.error ? "error" : ""}" role="status" data-testid="payment-message">${shown.text}</p>` : ""}
+        ${state.cart.length === 0 ? '<p class="muted">There is nothing to pay. Add products on the Register screen.</p>' : `
+        <form id="pay-form">
+          <fieldset>
+            <legend>Payment method</legend>
+            <label><input type="radio" name="method" value="cash" checked> Cash</label>
+            <label><input type="radio" name="method" value="card"> Card</label>
+          </fieldset>
+          <p id="cash-row"><label>Cash received <input name="tendered" inputmode="decimal" autocomplete="off" data-testid="cash-received"></label></p>
+          <button class="primary" type="submit" data-testid="complete-sale">Complete sale</button>
+        </form>`}
       </section>
       <aside class="panel" aria-label="Order summary" data-testid="order-summary">
         <h2>Order summary</h2>
@@ -29,6 +59,20 @@ function render(root) {
         </dl>
       </aside>
     </div>`;
+
+  const form = root.querySelector("#pay-form");
+  if (form) {
+    const cashRow = form.querySelector("#cash-row");
+    form.addEventListener("change", () => {
+      cashRow.hidden = form.method.value === "card";
+    });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      completeSale(t, form.method.value, parseAmount(form.tendered.value));
+      save();
+      draw();
+    });
+  }
 }
 
 registerScreen("/payment", "Payment", render);
