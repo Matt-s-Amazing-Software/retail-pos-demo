@@ -3,10 +3,18 @@ export const TAX_RATE = 0.0825;
 
 export const lineTotal = (line) => line.price * line.qty;
 
-export function totals(cart) {
+// A discount is { type: "percent", value: 10 } (ten percent) or { type: "amount", value: 500 } (five dollars, in cents).
+export function discountAmount(subtotal, discount) {
+  if (!discount) return 0;
+  const raw = discount.type === "percent" ? Math.round((subtotal * discount.value) / 100) : discount.value;
+  return Math.min(Math.max(raw, 0), subtotal);
+}
+
+export function totals(cart, discount = null) {
   const subtotal = cart.reduce((sum, line) => sum + lineTotal(line), 0);
+  const off = discountAmount(subtotal, discount);
   const tax = Math.round(subtotal * TAX_RATE); // rounded once for the whole order, not line by line
-  return { subtotal, tax, total: subtotal + tax };
+  return { subtotal, discount: off, tax, total: subtotal - off + tax };
 }
 
 export function addItem(cart, product) {

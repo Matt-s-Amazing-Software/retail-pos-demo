@@ -52,3 +52,5 @@ h3 { margin:16px 0 8px; }
 .register > section:last-child { align-self:start; position:sticky; top:12px; }
 td.qty button { min-width:44px; }
 .totals .grand dd { font-size:1.35rem; }
+.discount { margin:12px 0 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.discount label { margin:0; }

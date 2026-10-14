@@ -21,6 +21,7 @@ function render(root) {
       </table>
       <dl class="totals">
         <div><dt>Subtotal</dt><dd>${money(sale.subtotal)}</dd></div>
+        ${sale.discount ? `<div><dt>Discount</dt><dd>&minus;${money(sale.discount)}</dd></div>` : ""}
         <div><dt>Tax</dt><dd>${money(sale.tax)}</dd></div>
         <div class="grand"><dt>Total</dt><dd>${money(sale.total)}</dd></div>
         <div><dt>Paid by ${sale.method}</dt><dd>${money(sale.tendered)}</dd></div>

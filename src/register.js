@@ -8,7 +8,7 @@ import { save, state } from "./store.js";
 let message = null;
 
 function render(root) {
-  const t = totals(state.cart);
+  const t = totals(state.cart, state.discount);
   const closed = Boolean(state.session.closedAt);
   const shown = message;
   message = null;
@@ -45,9 +45,18 @@ function render(root) {
         </table>`}
         <dl class="totals">
           <div><dt>Subtotal</dt><dd data-testid="subtotal">${money(t.subtotal)}</dd></div>
+          ${t.discount ? `<div><dt>Discount</dt><dd data-testid="discount">&minus;${money(t.discount)}</dd></div>` : ""}
           <div><dt>Tax</dt><dd data-testid="tax">${money(t.tax)}</dd></div>
           <div class="grand"><dt>Total</dt><dd data-testid="total">${money(t.total)}</dd></div>
         </dl>
+        <form id="discount-form" class="discount">
+          <label>Discount
+            <select name="type" data-testid="discount-type"><option value="percent">Percent off</option><option value="amount">Dollars off</option></select>
+          </label>
+          <input name="value" inputmode="decimal" size="6" aria-label="Discount value" data-testid="discount-value" value="${state.discount ? (state.discount.type === "percent" ? state.discount.value : (state.discount.value / 100).toFixed(2)) : ""}">
+          <button type="submit" data-testid="apply-discount" ${state.cart.length === 0 || closed ? "disabled" : ""}>Apply</button>
+          ${state.discount ? '<button type="button" data-testid="remove-discount">Remove</button>' : ""}
+        </form>
         <p>
         <button data-testid="hold-order" ${state.cart.length === 0 || closed ? "disabled" : ""}>Hold order</button>
         <button class="primary" data-testid="go-to-payment" ${state.cart.length === 0 || closed ? "disabled" : ""}>Go to payment</button></p>
@@ -62,6 +71,18 @@ function render(root) {
       </ul>
     </section>`}`;
 
+  root.querySelector("#discount-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const f = event.target;
+    const amount = parseFloat(f.value.value);
+    if (!(amount > 0)) message = "Enter a discount above zero.";
+    else if (f.type.value === "percent" && amount > 100) message = "A percentage discount cannot be more than 100.";
+    else state.discount = f.type.value === "percent" ? { type: "percent", value: amount } : { type: "amount", value: Math.round(amount * 100) };
+    save();
+    draw();
+  });
+  const removeDiscount = root.querySelector("[data-testid=remove-discount]");
+  if (removeDiscount) removeDiscount.addEventListener("click", () => { state.discount = null; save(); draw(); });
   root.querySelector("[data-testid=hold-order]").addEventListener("click", () => {
     const result = holdOrder(state.held, state.cart);
     if (result.error) message = result.error;
