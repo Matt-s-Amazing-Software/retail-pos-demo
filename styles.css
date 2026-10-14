@@ -29,3 +29,5 @@ td.qty span { display:inline-block; min-width:2ch; text-align:center; }
 .totals div { display:flex; justify-content:space-between; padding:3px 0; }
 .totals dt, .totals dd { margin:0; }
 .totals .grand { font-weight:700; font-size:1.15rem; border-top:1px solid var(--line); margin-top:6px; padding-top:8px; }
+.due { font-size:1.2rem; }
+.due strong { font-size:1.6rem; }
