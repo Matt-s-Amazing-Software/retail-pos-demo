@@ -59,8 +59,8 @@ function render(root) {
   root.querySelectorAll("[data-act]").forEach((b) =>
     b.addEventListener("click", () => {
       const { act, sku } = b.dataset;
-      if (act === "inc") changeQty(state.cart, sku, 1);
-      if (act === "dec") changeQty(state.cart, sku, -1);
+      if (act === "inc") state.cart = changeQty(state.cart, sku, 1);
+      if (act === "dec") state.cart = changeQty(state.cart, sku, -1);
       if (act === "rm") state.cart = removeItem(state.cart, sku);
       save();
       draw();
