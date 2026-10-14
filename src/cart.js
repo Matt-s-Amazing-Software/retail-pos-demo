@@ -13,7 +13,7 @@ export function discountAmount(subtotal, discount) {
 export function totals(cart, discount = null) {
   const subtotal = cart.reduce((sum, line) => sum + lineTotal(line), 0);
   const off = discountAmount(subtotal, discount);
-  const tax = Math.round(subtotal * TAX_RATE); // rounded once for the whole order, not line by line
+  const tax = Math.round((subtotal - off) * TAX_RATE); // on what the customer pays for the goods; rounded once per order
   return { subtotal, discount: off, tax, total: subtotal - off + tax };
 }
 
