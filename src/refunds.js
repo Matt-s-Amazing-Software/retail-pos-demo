@@ -16,7 +16,7 @@ export function refundFor(sale, items) {
   const gross = items.reduce((sum, item) => sum + sale.lines.find((l) => l.sku === item.sku).price * item.qty, 0);
   // An order-level discount is shared across its items, so a returned item gets back what was actually paid for it.
   const subtotal = sale.subtotal === 0 ? 0 : Math.round(gross * (1 - (sale.discount || 0) / sale.subtotal));
-  const tax = sale.subtotal === 0 ? 0 : Math.round((sale.tax * gross) / sale.subtotal);
+  const tax = sale.subtotal === 0 ? 0 : Math.round((sale.tax * gross) / sale.subtotal); // the order's tax is already on the discounted price
   return { subtotal, tax, total: subtotal + tax };
 }
 

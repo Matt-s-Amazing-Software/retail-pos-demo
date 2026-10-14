@@ -36,3 +36,15 @@ test("removing a line leaves the others", () => {
   const cart = removeItem(addItem(addItem([], mug), tea), "MUG-01");
   assert.deepEqual(cart.map((l) => l.sku), ["TEA-02"]);
 });
+
+test("a discount comes off before tax is worked out", () => {
+  const cart = addItem(addItem([], mug), tea); // 20.50
+  assert.deepEqual(totals(cart, { type: "percent", value: 10 }), { subtotal: 2050, discount: 205, tax: 152, total: 1997 });
+  assert.deepEqual(totals(cart, { type: "amount", value: 500 }), { subtotal: 2050, discount: 500, tax: 128, total: 1678 });
+});
+
+test("a discount can never exceed the subtotal", () => {
+  const cart = addItem([], mug);
+  assert.equal(totals(cart, { type: "amount", value: 99999 }).total, 0);
+  assert.equal(totals(cart, { type: "percent", value: 100 }).tax, 0);
+});
