@@ -89,3 +89,4 @@ input.stock { font:inherit; padding:6px 8px; }
 #balance-result { margin-left:8px; font-weight:600; }
 #balance-result.good { color:var(--good); }
 #balance-result.bad { color:var(--bad); }
+#order-note { max-width:100%; }

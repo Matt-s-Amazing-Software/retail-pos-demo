@@ -32,6 +32,7 @@ function render(root) {
         ${sale.change ? `<div><dt>Change</dt><dd>${money(sale.change)}</dd></div>` : ""}
         ${sale.giftCard ? `<div data-testid="receipt-gift-balance"><dt>Gift card balance</dt><dd>${money(sale.giftBalance)}</dd></div>` : ""}
       </dl>
+      ${sale.note ? `<p data-testid="receipt-note">Note: ${sale.note}</p>` : ""}
       <p class="muted">Thank you for shopping with us.</p>
       <p class="no-print"><button class="primary" data-testid="print-receipt">Print receipt</button></p>
     </section>`;
