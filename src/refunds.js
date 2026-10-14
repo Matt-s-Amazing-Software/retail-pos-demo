@@ -22,6 +22,7 @@ export function refundFor(sale, items) {
 
 // Check a return request. `items` are the lines the cashier wants to return, with quantities above zero.
 export function validateReturn(sale, returns, items, reason) {
+  if (sale.voided) return "This order was voided and cannot be returned.";
   if (!REASONS.includes(reason)) return "Choose a reason for the return.";
   if (items.length === 0) return "Choose at least one item to return.";
   const left = returnableQty(sale, returns);
