@@ -22,6 +22,7 @@ function completeSale(t, method, tendered, giftCode) {
     return;
   }
   let giftCard = null;
+  let giftBalance = null;
   if (method === "giftcard") {
     const charge = chargeCard(state.giftCards, giftCode, t.total);
     if (!charge.ok) {
@@ -30,17 +31,19 @@ function completeSale(t, method, tendered, giftCode) {
     }
     state.giftCards = charge.cards;
     giftCard = charge.code;
+    giftBalance = charge.cards.find((c) => c.code === charge.code).balance;
   }
   const id = state.nextOrder++;
   state.sales = [...state.sales, {
     id, at: new Date().toISOString(), lines: state.cart.map((l) => ({ ...l })), ...t,
-    method, tendered: result.tendered, change: result.change, ...(giftCard ? { giftCard } : {}),
+    method, tendered: result.tendered, change: result.change, ...(giftCard ? { giftCard, giftBalance } : {}),
   }];
   log("Sales", `Order ${id}: ${money(t.total)} paid by ${methodLabel(method)}`);
   state.catalog = applySale(state.catalog, state.cart);
   state.cart = [];
   state.discount = null;
   message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "")
+    + (giftCard ? ` ${giftCard} has ${money(giftBalance)} left.` : "")
     + ` <a href="#/receipt?order=${id}" data-testid="view-receipt">View receipt</a>` };
 }
 
