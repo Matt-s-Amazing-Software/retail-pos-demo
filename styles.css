@@ -34,3 +34,6 @@ td.qty span { display:inline-block; min-width:2ch; text-align:center; }
 fieldset { border:1px solid var(--line); border-radius:8px; margin:0 0 12px; }
 fieldset label { margin-right:16px; }
 input[name=tendered] { font:inherit; padding:6px 8px; width:9em; }
+label { display:inline-block; margin:0 8px 8px 0; }
+input, select { font:inherit; padding:6px 8px; border:1px solid var(--line); border-radius:6px; }
+h3 { margin:16px 0 8px; }

@@ -1,6 +1,6 @@
 // The app's state, kept in the browser's local storage. There is no server and no real data.
 const KEY = "retail-pos-demo/v1";
-const fresh = () => ({ cart: [], sales: [], nextOrder: 1001 });
+const fresh = () => ({ cart: [], sales: [], returns: [], nextOrder: 1001, nextReturn: 1 });
 
 function load() {
   try {
