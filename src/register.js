@@ -41,9 +41,13 @@ function render(root) {
           <div><dt>Tax</dt><dd data-testid="tax">${money(t.tax)}</dd></div>
           <div class="grand"><dt>Total</dt><dd data-testid="total">${money(t.total)}</dd></div>
         </dl>
+        <p><button class="primary" data-testid="go-to-payment" ${state.cart.length === 0 ? "disabled" : ""}>Go to payment</button></p>
       </section>
     </div>`;
 
+  root.querySelector("[data-testid=go-to-payment]").addEventListener("click", () => {
+    location.hash = "#/payment";
+  });
   root.querySelectorAll("[data-testid^=product-]").forEach((b) =>
     b.addEventListener("click", () => {
       addItem(state.cart, PRODUCTS.find((p) => p.sku === b.dataset.sku));
