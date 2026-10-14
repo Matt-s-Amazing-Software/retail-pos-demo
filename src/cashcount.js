@@ -12,7 +12,7 @@ export const countedTotal = (counts) =>
 // Cash that should be in the drawer: the opening float, plus cash sales, minus cash refunds, since the session opened.
 export function expectedCash(session, sales, returns) {
   const since = (x) => x.at >= session.openedAt;
-  const cashIn = sales.filter((s) => since(s) && s.method === "cash").reduce((sum, s) => sum + s.total, 0);
+  const cashIn = sales.filter((s) => since(s) && s.method === "cash" && !s.voided).reduce((sum, s) => sum + s.total, 0);
   const cashOut = returns.filter((r) => since(r) && r.method === "cash").reduce((sum, r) => sum + r.total, 0);
   return session.float + cashIn - cashOut;
 }

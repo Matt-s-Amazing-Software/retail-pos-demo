@@ -14,6 +14,7 @@ function render(root) {
   root.innerHTML = `
     <section class="panel receipt" aria-label="Receipt" data-testid="receipt">
       <h2>${state.settings.storeName}</h2>
+      ${sale.voided ? `<p class="notice error" data-testid="receipt-voided">VOIDED &mdash; ${sale.voided.reason}</p>` : ""}
       <p class="muted">Order ${sale.id} &middot; ${new Date(sale.at).toLocaleString("en-US")}</p>
       <table>
         <tbody>
