@@ -3,6 +3,7 @@ import { registerScreen, draw } from "./router.js";
 import { money } from "./money.js";
 import { noticeHtml } from "./notice.js";
 import { REASONS, refundFor, returnableQty, validateReturn } from "./refunds.js";
+import { applyReturn } from "./stock.js";
 import { save, state } from "./store.js";
 
 let lookup = ""; // the order number being worked on
@@ -61,6 +62,7 @@ function render(root) {
         const refund = refundFor(sale, items);
         state.returns.push({ id: state.nextReturn++, orderId: sale.id, at: new Date().toISOString(),
           items, reason: form.reason.value, method: sale.method, ...refund });
+        state.catalog = applyReturn(state.catalog, items);
         message = { error: false, text: `Refunded ${money(refund.total)} to the original payment method (${sale.method}).` };
         save();
       }
