@@ -3,12 +3,18 @@ import { registerScreen, draw } from "./router.js";
 import { PRODUCTS } from "./catalog.js";
 import { addItem, changeQty, lineTotal, removeItem, totals } from "./cart.js";
 import { money } from "./money.js";
+import { holdOrder, resumeOrder } from "./held.js";
 import { save, state } from "./store.js";
+
+let message = null;
 
 function render(root) {
   const t = totals(state.cart);
   const closed = Boolean(state.session.closedAt);
+  const shown = message;
+  message = null;
   root.innerHTML = `
+    ${shown ? `<p class="notice error" role="status" data-testid="register-message">${shown}</p>` : ""}
     ${closed ? '<p class="notice error" role="status" data-testid="session-closed">The session is closed. Start a new session on the Close session screen to keep selling.</p>' : ""}
     <div class="register">
       <section class="panel" aria-label="Products">
@@ -43,10 +49,41 @@ function render(root) {
           <div><dt>Tax</dt><dd data-testid="tax">${money(t.tax)}</dd></div>
           <div class="grand"><dt>Total</dt><dd data-testid="total">${money(t.total)}</dd></div>
         </dl>
-        <p><button class="primary" data-testid="go-to-payment" ${state.cart.length === 0 || closed ? "disabled" : ""}>Go to payment</button></p>
+        <p>
+        <button data-testid="hold-order" ${state.cart.length === 0 || closed ? "disabled" : ""}>Hold order</button>
+        <button class="primary" data-testid="go-to-payment" ${state.cart.length === 0 || closed ? "disabled" : ""}>Go to payment</button></p>
       </section>
-    </div>`;
+    </div>
+    ${state.held.length === 0 ? "" : `
+    <section class="panel held" aria-label="Held orders">
+      <h2>Held orders</h2>
+      <ul>
+        ${state.held.map((h) => `<li>Held order ${h.id} &middot; ${h.lines.reduce((n, l) => n + l.qty, 0)} items
+          <button data-testid="resume-${h.id}" data-resume="${h.id}" ${closed ? "disabled" : ""}>Resume</button></li>`).join("")}
+      </ul>
+    </section>`}`;
 
+  root.querySelector("[data-testid=hold-order]").addEventListener("click", () => {
+    const result = holdOrder(state.held, state.cart);
+    if (result.error) message = result.error;
+    else {
+      state.held = result.held;
+      state.cart = [];
+    }
+    save();
+    draw();
+  });
+  root.querySelectorAll("[data-resume]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const result = resumeOrder(state.held, state.cart, Number(b.dataset.resume));
+      if (result.error) message = result.error;
+      else {
+        state.held = result.held;
+        state.cart = result.cart;
+      }
+      save();
+      draw();
+    }));
   root.querySelector("[data-testid=go-to-payment]").addEventListener("click", () => {
     location.hash = "#/payment";
   });
