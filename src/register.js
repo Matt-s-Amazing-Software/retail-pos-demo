@@ -19,7 +19,7 @@ function render(root) {
       <section class="panel" aria-label="Products">
         <h2>Products</h2>
         <div class="grid">
-          ${state.catalog.map((p) => `
+          ${state.catalog.filter((p) => p.active).map((p) => `
             <button data-testid="product-${p.sku}" data-sku="${p.sku}" ${closed ? "disabled" : ""} aria-label="Add ${p.name}, ${money(p.price)}">
               <strong>${p.name}</strong><br><span class="muted">${money(p.price)}</span>
             </button>`).join("")}
