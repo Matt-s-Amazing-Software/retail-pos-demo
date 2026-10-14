@@ -67,3 +67,20 @@ kbd { border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; 
 .tag.out { background:#fee2e2; color:#991b1b; }
 .grid button:disabled { background:#f1f5f9; }
 input.stock { font:inherit; padding:6px 8px; }
+
+/* Dark theme */
+[data-theme="dark"] { --ink:#e2e8f0; --muted:#94a3b8; --line:#334155; --bg:#0f172a; --brand:#1e3a5f; --good:#4ade80; --bad:#f87171; }
+.theme-toggle { min-height:36px; padding:4px 12px; background:transparent; color:#fff; border-color:#7f93b0; }
+
+/* Phones */
+@media (max-width: 600px) {
+  .topbar { flex-wrap:wrap; padding:10px 12px; }
+  nav { width:100%; flex-wrap:nowrap; overflow-x:auto; }
+  nav a { white-space:nowrap; }
+  main { padding:12px; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .panel { overflow-x:auto; }
+  .register > section:last-child { position:static; }
+  .discount, #pay-form, #find-form { flex-direction:column; align-items:stretch; }
+  .grid button, .discount button, #pay-form button { width:100%; }
+}
