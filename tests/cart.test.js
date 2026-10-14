@@ -12,7 +12,7 @@ test("adding the same product twice raises its quantity", () => {
 });
 
 test("tax is rounded once for the whole order, not per line", () => {
-  assert.deepEqual(totals(addItem(addItem([], mug), tea)), { subtotal: 2050, tax: 169, total: 2219 });
+  assert.deepEqual(totals(addItem(addItem([], mug), tea)), { subtotal: 2050, discount: 0, tax: 169, total: 2219 });
   // Two notebooks (6.25) and two pens (4.75): rounded line by line the tax is 1.03 + 0.78 = 1.81,
   // but the order's 22.00 at 8.25% is 1.815, which rounds to 1.82.
   const notebook = { sku: "NTB-05", name: "Notebook", price: 625 };

@@ -4,7 +4,7 @@ import { PRODUCTS } from "./catalog.js";
 
 // A session is one shift on the register: it opens with a cash float and ends with a count of the drawer.
 export const newSession = () => ({ openedAt: new Date().toISOString(), float: 10000, closedAt: null, result: null });
-const fresh = () => ({ cart: [], sales: [], returns: [], held: [], catalog: PRODUCTS.map((p) => ({ ...p, active: true })), nextOrder: 1001, nextReturn: 1, session: newSession() });
+const fresh = () => ({ cart: [], discount: null, sales: [], returns: [], held: [], catalog: PRODUCTS.map((p) => ({ ...p, active: true })), nextOrder: 1001, nextReturn: 1, session: newSession() });
 
 function load() {
   try {

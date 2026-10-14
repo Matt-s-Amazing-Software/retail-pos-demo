@@ -23,12 +23,13 @@ function completeSale(t, method, tendered) {
     method, tendered: result.tendered, change: result.change,
   }];
   state.cart = [];
+  state.discount = null;
   message = { error: false, text: `Sale ${id} complete.` + (method === "cash" ? ` Change due ${money(result.change)}.` : "")
     + ` <a href="#/receipt?order=${id}" data-testid="view-receipt">View receipt</a>` };
 }
 
 function render(root) {
-  const t = totals(state.cart);
+  const t = totals(state.cart, state.discount);
   const shown = message; // a result is displayed once, then forgotten
   message = null;
   root.innerHTML = `
@@ -59,6 +60,7 @@ function render(root) {
         </table>`}
         <dl class="totals">
           <div><dt>Subtotal</dt><dd>${money(t.subtotal)}</dd></div>
+          ${t.discount ? `<div><dt>Discount</dt><dd>&minus;${money(t.discount)}</dd></div>` : ""}
           <div><dt>Tax</dt><dd>${money(t.tax)}</dd></div>
           <div class="grand"><dt>Total</dt><dd>${money(t.total)}</dd></div>
         </dl>
