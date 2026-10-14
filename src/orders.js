@@ -9,9 +9,15 @@ export function orderStatus(sale, returns) {
 }
 
 // Newest first. A query matches the order number exactly, or a product name or SKU on the order.
-export function filterOrders(sales, query) {
+// `from` and `to` are optional dates (YYYY-MM-DD, the shop's local days, both included).
+export function filterOrders(sales, query, from = "", to = "") {
   const q = String(query || "").trim().toLowerCase();
+  const day = (s) => {
+    const d = new Date(s.at);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+  const inRange = (s) => (!from || day(s) >= from) && (!to || day(s) <= to);
   const matches = (s) =>
     !q || String(s.id) === q || s.lines.some((l) => l.name.toLowerCase().includes(q) || l.sku.toLowerCase().includes(q));
-  return [...sales].filter(matches).sort((a, b) => b.id - a.id);
+  return [...sales].filter((s) => matches(s) && inRange(s)).sort((a, b) => b.id - a.id);
 }

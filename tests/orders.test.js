@@ -21,3 +21,12 @@ test("an order shows whether any of it was returned", () => {
   assert.equal(orderStatus(sales[0], back(1)), "Partly refunded");
   assert.equal(orderStatus(sales[0], back(2)), "Refunded");
 });
+
+test("orders can be limited to a range of days, both ends included", () => {
+  const at = (day) => new Date(`${day}T12:00:00`).toISOString();
+  const dated = [{ id: 1, at: at("2026-01-01"), lines: [] }, { id: 2, at: at("2026-01-02"), lines: [] }, { id: 3, at: at("2026-01-03"), lines: [] }];
+  assert.deepEqual(filterOrders(dated, "", "2026-01-02", "2026-01-03").map((s) => s.id), [3, 2]);
+  assert.deepEqual(filterOrders(dated, "", "2026-01-03").map((s) => s.id), [3]);
+  assert.deepEqual(filterOrders(dated, "", "", "2026-01-01").map((s) => s.id), [1]);
+  assert.deepEqual(filterOrders(dated, "").map((s) => s.id), [3, 2, 1]);
+});

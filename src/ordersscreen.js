@@ -22,22 +22,28 @@ function downloadCsv() {
 }
 
 let query = "";
+let fromDate = "";
+let toDate = "";
 let voiding = null; // the order number whose void form is open
 let message = null;
 
 function render(root) {
   const shown = message;
   message = null;
-  const orders = filterOrders(state.sales, query);
+  const badRange = fromDate && toDate && fromDate > toDate;
+  const orders = badRange ? [] : filterOrders(state.sales, query, fromDate, toDate);
   const manager = (USERS.find((u) => u.id === state.currentUser) || {}).role === "manager"; // only managers export
   root.innerHTML = `
     <section class="panel" aria-label="Orders">
       <h2>Orders</h2>
       ${noticeHtml(shown, "orders-message")}
       <form id="order-search"><label>Search <input name="q" value="${query}" placeholder="Order number or product" data-testid="order-search"></label>
+        <label>From <input type="date" name="from" value="${fromDate}" data-testid="order-from"></label>
+        <label>To <input type="date" name="to" value="${toDate}" data-testid="order-to"></label>
         <button type="submit">Search</button>
         ${manager ? '<button type="button" data-testid="export-csv">Export CSV</button>' : ""}</form>
-      ${orders.length === 0 ? '<p class="muted" data-testid="no-orders">No orders to show.</p>' : `
+      ${badRange ? '<p class="notice error" data-testid="range-error">The From date is after the To date.</p>' : ""}
+      ${orders.length === 0 && !badRange ? '<p class="muted" data-testid="no-orders">No orders to show.</p>' : `
       <table data-testid="orders-table">
         <thead><tr><th align="left">Order</th><th align="left">Time</th><th align="left">Items</th><th align="left">Paid by</th><th align="left">Total</th><th align="left">Status</th><th></th></tr></thead>
         <tbody>
@@ -86,6 +92,8 @@ function render(root) {
   root.querySelector("#order-search").addEventListener("submit", (event) => {
     event.preventDefault();
     query = event.target.q.value;
+    fromDate = event.target.from.value;
+    toDate = event.target.to.value;
     draw();
   });
 }
