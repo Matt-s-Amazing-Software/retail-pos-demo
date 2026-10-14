@@ -7,3 +7,4 @@ import "./closeout.js";
 import "./receipt.js";
 import "./catalogscreen.js";
 import "./ordersscreen.js";
+import "./settingsscreen.js";

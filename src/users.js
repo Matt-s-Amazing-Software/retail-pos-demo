@@ -5,7 +5,7 @@ export const USERS = [
 ];
 
 // Screens only a manager may open.
-export const MANAGER_ONLY = ["/catalog"];
+export const MANAGER_ONLY = ["/catalog", "/settings"];
 
 export function authenticate(users, id, pin) {
   const user = users.find((u) => u.id === id);
