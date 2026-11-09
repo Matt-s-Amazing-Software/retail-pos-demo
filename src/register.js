@@ -4,9 +4,11 @@ import { addItem, changeQty, lineTotal, removeItem, totals } from "./cart.js";
 import { money } from "./money.js";
 import { holdOrder, resumeOrder } from "./held.js";
 import { canAdd, inCart, isLow, stockOf } from "./stock.js";
+import { filterProducts } from "./productsearch.js";
 import { save, state } from "./store.js";
 
 let message = null;
+let search = ""; // what the cashier has typed into the product search
 
 // Add one product to the order unless the shelf cannot cover it. Used by the buttons, the + button and the shortcuts.
 function tryAdd(product) {
@@ -22,14 +24,17 @@ function render(root) {
   const closed = Boolean(state.session.closedAt);
   const shown = message;
   message = null;
+  const found = filterProducts(state.catalog.filter((p) => p.active), search);
   root.innerHTML = `
     ${shown ? `<p class="notice error" role="status" data-testid="register-message">${shown}</p>` : ""}
     ${closed ? '<p class="notice error" role="status" data-testid="session-closed">The session is closed. Start a new session on the Close session screen to keep selling.</p>' : ""}
     <div class="register">
       <section class="panel" aria-label="Products">
         <h2>Products</h2>
+        <label class="grid-search">Search <input name="search-products" value="${search.replace(/"/g, "&quot;")}" placeholder="Product name" autocomplete="off" data-testid="search-products"></label>
+        ${found.length === 0 ? '<p class="muted" data-testid="no-products">No products match.</p>' : ""}
         <div class="grid">
-          ${state.catalog.filter((p) => p.active).map((p) => `
+          ${found.map((p) => `
             <button data-testid="product-${p.sku}" data-sku="${p.sku}" ${closed || stockOf(p) === 0 ? "disabled" : ""} aria-label="Add ${p.name}, ${money(p.price)}">
               <strong>${p.name}</strong><br><span class="muted">${money(p.price)}</span>
               ${stockOf(p) === 0 ? '<br><span class="tag out" data-testid="out-' + p.sku + '">Out of stock</span>'
@@ -85,6 +90,10 @@ function render(root) {
       </ul>
     </section>`}`;
 
+  root.querySelector("[data-testid=search-products]").addEventListener("input", (event) => {
+    search = event.target.value;
+    draw();
+  });
   root.querySelector("#order-note").addEventListener("change", (event) => {
     state.orderNote = event.target.value.trim();
     save();
