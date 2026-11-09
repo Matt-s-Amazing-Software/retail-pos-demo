@@ -13,7 +13,7 @@ import { log } from "./activitylog.js";
 import { save, state } from "./store.js";
 
 function downloadCsv() {
-  const blob = new Blob([ordersToCsv(filterOrders(state.sales, ""))], { type: "text/csv" });
+  const blob = new Blob([ordersToCsv(filterOrders(state.sales, ""), state.returns)], { type: "text/csv" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = "orders.csv";
