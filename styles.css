@@ -19,6 +19,8 @@ button:disabled { opacity:.5; cursor:not-allowed; }
 
 .register { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
 @media (max-width: 800px) { .register { grid-template-columns: 1fr; } }
+.grid-search { display:block; margin:0 0 12px; }
+.grid-search input { font:inherit; padding:6px 8px; width:100%; box-sizing:border-box; }
 .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:10px; }
 .grid button { padding:16px 12px; text-align:left; min-height:84px; border-radius:12px; font-size:1rem; transition: box-shadow .15s, transform .05s; }
 .grid button:hover:not(:disabled) { box-shadow:0 2px 8px rgba(31,58,95,.18); }
