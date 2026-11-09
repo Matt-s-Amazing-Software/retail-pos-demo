@@ -9,6 +9,7 @@ import { save, state } from "./store.js";
 
 let message = null;
 let search = ""; // what the cashier has typed into the product search
+let caret = null; // where the cursor was in the search box, while the screen is redrawn around it
 
 // Add one product to the order unless the shelf cannot cover it. Used by the buttons, the + button and the shortcuts.
 function tryAdd(product) {
@@ -92,8 +93,15 @@ function render(root) {
 
   root.querySelector("[data-testid=search-products]").addEventListener("input", (event) => {
     search = event.target.value;
+    caret = event.target.selectionStart;
     draw();
   });
+  if (caret !== null) {                 // drawing replaces the box, so the cursor has to be put back in it
+    const box = root.querySelector("[data-testid=search-products]");
+    box.focus();
+    box.setSelectionRange(caret, caret);
+    caret = null;
+  }
   root.querySelector("#order-note").addEventListener("change", (event) => {
     state.orderNote = event.target.value.trim();
     save();
