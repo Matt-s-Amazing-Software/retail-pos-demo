@@ -8,6 +8,11 @@ export function orderStatus(sale, returns) {
   return back >= sold ? "Refunded" : "Partly refunded";
 }
 
+// Why any of this order came back: each reason once, in the order the returns were made.
+export function returnReasons(sale, returns) {
+  return [...new Set(returns.filter((r) => r.orderId === sale.id).map((r) => r.reason))];
+}
+
 // Newest first. A query matches the order number exactly, or a product name or SKU on the order.
 // `from` and `to` are optional dates (YYYY-MM-DD, the shop's local days, both included).
 export function filterOrders(sales, query, from = "", to = "") {

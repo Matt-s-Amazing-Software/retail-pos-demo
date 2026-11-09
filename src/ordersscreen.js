@@ -1,6 +1,6 @@
 // The Orders screen: every sale so far, with a search box.
 import { registerScreen, draw } from "./router.js";
-import { filterOrders, orderStatus } from "./orders.js";
+import { filterOrders, orderStatus, returnReasons } from "./orders.js";
 import { ordersToCsv } from "./csv.js";
 import { USERS } from "./users.js";
 import { money } from "./money.js";
@@ -51,7 +51,7 @@ function render(root) {
           <tr data-order="${s.id}">
             <td>${s.id}</td><td>${new Date(s.at).toLocaleString("en-US")}</td>
             <td>${s.lines.reduce((n, l) => n + l.qty, 0)}</td><td>${methodLabel(s.method)}</td><td class="num">${money(s.total)}</td>
-            <td>${orderStatus(s, state.returns)}</td><td><a href="#/receipt?order=${s.id}">Receipt</a>
+            <td>${orderStatus(s, state.returns)}${returnReasons(s, state.returns).length ? `<br><span class="muted" data-testid="return-reasons-${s.id}">${returnReasons(s, state.returns).join(", ")}</span>` : ""}</td><td><a href="#/receipt?order=${s.id}">Receipt</a>
               ${manager && !s.voided ? ` <button data-void="${s.id}" data-testid="void-${s.id}">Void</button>` : ""}</td>
           </tr>`).join("")}
         </tbody>

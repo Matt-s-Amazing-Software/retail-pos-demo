@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { filterOrders, orderStatus } from "../src/orders.js";
+import { filterOrders, orderStatus, returnReasons } from "../src/orders.js";
 
 const sales = [
   { id: 1001, lines: [{ sku: "MUG-01", name: "Ceramic Mug", qty: 2 }] },
@@ -29,4 +29,14 @@ test("orders can be limited to a range of days, both ends included", () => {
   assert.deepEqual(filterOrders(dated, "", "2026-01-03").map((s) => s.id), [3]);
   assert.deepEqual(filterOrders(dated, "", "", "2026-01-01").map((s) => s.id), [1]);
   assert.deepEqual(filterOrders(dated, "").map((s) => s.id), [3, 2, 1]);
+});
+
+test("the reasons an order came back are listed once each, in the order they were given", () => {
+  const sale = { id: 1001 };
+  const returns = [{ orderId: 1001, reason: "Defective" }, { orderId: 1002, reason: "Wrong item" }, { orderId: 1001, reason: "Customer changed their mind" }, { orderId: 1001, reason: "Defective" }];
+  assert.deepEqual(returnReasons(sale, returns), ["Defective", "Customer changed their mind"]);
+});
+
+test("an order nothing came back from has no reasons", () => {
+  assert.deepEqual(returnReasons({ id: 1001 }, []), []);
 });
